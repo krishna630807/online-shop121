@@ -48,7 +48,7 @@ export const Footer = () => {
                   onClick={scrollToTop}
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  Featured Products
+                  Categories
                 </button>
               </li>
             </ul>
