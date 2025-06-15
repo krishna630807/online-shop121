@@ -27,7 +27,7 @@ export const Header = ({ onSearchClick }: HeaderProps) => {
 
         <nav className="hidden md:flex items-center space-x-6">
           <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">Home</Link>
-          <a href="#categories" className="text-sm font-medium hover:text-primary transition-colors">Categories</a>
+          <a href="#categories" className="text-sm font-medium hover:text-primary transition-colors">Featured Products</a>
           <button 
             onClick={scrollToFooter}
             className="text-sm font-medium hover:text-primary transition-colors"

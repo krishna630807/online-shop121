@@ -4,13 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
-  const scrollToCategories = () => {
-    const categoriesSection = document.getElementById('categories');
-    if (categoriesSection) {
-      categoriesSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -52,44 +45,10 @@ export const Footer = () => {
               </li>
               <li>
                 <button 
-                  onClick={scrollToCategories}
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  Categories
-                </button>
-              </li>
-              <li>
-                <button 
                   onClick={scrollToTop}
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Featured Products
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => {
-                    const footer = document.querySelector('footer');
-                    if (footer) {
-                      footer.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  About Us
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => {
-                    const footer = document.querySelector('footer');
-                    if (footer) {
-                      footer.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  Contact
                 </button>
               </li>
             </ul>
