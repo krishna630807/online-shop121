@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { CategorySection } from "@/components/CategorySection";
-import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Footer } from "@/components/Footer";
 import { SearchBar } from "@/components/SearchBar";
@@ -54,25 +53,6 @@ const Index = () => {
     },
   });
 
-  const { data: featuredProducts = [] } = useQuery({
-    queryKey: ['featured-products'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          *,
-          categories (
-            id,
-            name
-          )
-        `)
-        .eq('featured', true)
-        .limit(6);
-      if (error) throw error;
-      return data;
-    },
-  });
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -84,7 +64,6 @@ const Index = () => {
             categories={categories} 
             onCategorySelect={setSelectedCategory}
           />
-          <FeaturedProducts products={featuredProducts} />
         </>
       )}
 
