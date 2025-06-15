@@ -43,6 +43,14 @@ export const SearchBar = ({
     onCategoryChange(null);
   };
 
+  const handleCategoryChange = (value: string) => {
+    if (value === "all-categories") {
+      onCategoryChange(null);
+    } else {
+      onCategoryChange(value);
+    }
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border mb-8">
       <div className="flex flex-col md:flex-row gap-4">
@@ -59,15 +67,15 @@ export const SearchBar = ({
         
         <div className="flex gap-2">
           <Select
-            value={selectedCategory || ""}
-            onValueChange={(value) => onCategoryChange(value || null)}
+            value={selectedCategory || "all-categories"}
+            onValueChange={handleCategoryChange}
           >
             <SelectTrigger className="w-48">
               <Filter className="h-4 w-4 mr-2" />
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all-categories">All Categories</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
