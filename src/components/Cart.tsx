@@ -31,7 +31,7 @@ export const Cart = () => {
     const message = `Hi! I would like to place an order:\n\n${orderDetails}\n\nTotal: $${totalAmount}\n\nPlease let me know how to proceed with the payment and delivery.`;
     
     // Replace with your actual WhatsApp number (in international format without + sign)
-    const phoneNumber = "9336442139"; // Replace with owner's WhatsApp number
+    const phoneNumber = "6306151952"; // Replace with owner's WhatsApp number
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
     // Open WhatsApp in new tab
