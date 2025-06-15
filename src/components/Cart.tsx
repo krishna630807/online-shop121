@@ -12,7 +12,7 @@ export const Cart = () => {
   const { items, updateQuantity, removeFromCart, getCartTotal, getCartItemCount, clearCart } = useCart();
   const [showThankYou, setShowThankYou] = useState(false);
 
-  const handleFakeCheckout = () => {
+  const handleWhatsAppCheckout = () => {
     if (items.length === 0) {
       toast({
         title: "Cart is empty",
@@ -21,9 +21,26 @@ export const Cart = () => {
       });
       return;
     }
+
+    // Create WhatsApp message with cart details
+    const orderDetails = items.map(item => 
+      `• ${item.name} - Qty: ${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`
+    ).join('\n');
+    
+    const totalAmount = getCartTotal().toFixed(2);
+    const message = `Hi! I would like to place an order:\n\n${orderDetails}\n\nTotal: $${totalAmount}\n\nPlease let me know how to proceed with the payment and delivery.`;
+    
+    // Replace with your actual WhatsApp number (in international format without + sign)
+    const phoneNumber = "1234567890"; // Replace with owner's WhatsApp number
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    
+    // Open WhatsApp in new tab
+    window.open(whatsappUrl, '_blank');
+    
+    // Clear cart and show thank you message
     clearCart();
     setShowThankYou(true);
-    setTimeout(() => setShowThankYou(false), 2000);
+    setTimeout(() => setShowThankYou(false), 3000);
   };
 
   const cartItemCount = getCartItemCount();
@@ -90,13 +107,13 @@ export const Cart = () => {
                 <span>Total:</span>
                 <span>${cartTotal.toFixed(2)}</span>
               </div>
-              <Button onClick={handleFakeCheckout} className="w-full" size="lg">
-                Checkout
+              <Button onClick={handleWhatsAppCheckout} className="w-full" size="lg">
+                Order via WhatsApp
               </Button>
               {showThankYou && (
                 <div className="flex flex-col items-center justify-center py-4">
                   <CheckCircle className="h-8 w-8 text-green-600 mb-2" />
-                  <span className="text-green-600 font-bold">Thank you for your order!</span>
+                  <span className="text-green-600 font-bold">Order sent to WhatsApp!</span>
                 </div>
               )}
             </div>
