@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -12,6 +12,7 @@ import { SearchBar } from "@/components/SearchBar";
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -53,9 +54,22 @@ const Index = () => {
     },
   });
 
+  const handleSearchClick = () => {
+    if (searchBarRef.current) {
+      searchBarRef.current.scrollIntoView({ behavior: 'smooth' });
+      // Focus the search input after scrolling
+      setTimeout(() => {
+        const searchInput = searchBarRef.current?.querySelector('input');
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 500);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header onSearchClick={handleSearchClick} />
       
       {!searchQuery && !selectedCategory && (
         <>
@@ -67,7 +81,7 @@ const Index = () => {
         </>
       )}
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8" ref={searchBarRef}>
         <SearchBar 
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
