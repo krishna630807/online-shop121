@@ -1,3 +1,4 @@
+
 import { Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Cart } from "./Cart";
@@ -16,7 +17,6 @@ export const Header = () => {
         <nav className="hidden md:flex items-center space-x-6">
           <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">Home</Link>
           <a href="#categories" className="text-sm font-medium hover:text-primary transition-colors">Categories</a>
-          <a href="#featured" className="text-sm font-medium hover:text-primary transition-colors">Featured</a>
           <a href="#about" className="text-sm font-medium hover:text-primary transition-colors">About</a>
         </nav>
 
