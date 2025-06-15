@@ -1,27 +1,46 @@
 
-import { ShoppingCart, Search, Menu } from "lucide-react";
+import { Search, Menu, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Cart } from "./Cart";
+import { useAuth } from "@/contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Header = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-2">
-          <h1 className="text-2xl font-bold text-primary">CatalogHaven</h1>
+          <Link to="/">
+            <h1 className="text-2xl font-bold text-primary cursor-pointer">CatalogHaven</h1>
+          </Link>
         </div>
 
         <nav className="hidden md:flex items-center space-x-6">
-          <a href="#" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
             Home
-          </a>
-          <a href="#" className="text-sm font-medium hover:text-primary transition-colors">
+          </Link>
+          <a href="#categories" className="text-sm font-medium hover:text-primary transition-colors">
             Categories
           </a>
-          <a href="#" className="text-sm font-medium hover:text-primary transition-colors">
+          <a href="#featured" className="text-sm font-medium hover:text-primary transition-colors">
             Featured
           </a>
-          <a href="#" className="text-sm font-medium hover:text-primary transition-colors">
+          <a href="#about" className="text-sm font-medium hover:text-primary transition-colors">
             About
           </a>
         </nav>
@@ -31,15 +50,32 @@ export const Header = () => {
             <Search className="h-5 w-5" />
           </Button>
           
-          <Button variant="ghost" size="icon" className="relative">
-            <ShoppingCart className="h-5 w-5" />
-            <Badge 
-              variant="destructive" 
-              className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
-            >
-              0
-            </Badge>
-          </Button>
+          <Cart />
+
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="outline" size="sm">
+              <Link to="/auth">Sign In</Link>
+            </Button>
+          )}
 
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />

@@ -1,8 +1,11 @@
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/hooks/use-toast";
 
 interface Product {
   id: string;
@@ -23,68 +26,92 @@ interface ProductGridProps {
 }
 
 export const ProductGrid = ({ products }: ProductGridProps) => {
+  const { addToCart, loading } = useCart();
+  const { user } = useAuth();
+
+  const handleAddToCart = async (productId: string, productName: string) => {
+    if (!user) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be signed in to add items to cart",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    await addToCart(productId);
+  };
+
   if (products.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-semibold mb-2">No products found</h3>
-        <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
+        <p className="text-lg text-muted-foreground">No products found.</p>
+        <p className="text-sm text-muted-foreground mt-2">Try adjusting your search or filter criteria.</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map((product) => (
-        <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-          <CardContent className="p-0">
-            <div className="relative aspect-square overflow-hidden rounded-t-lg">
+        <Card key={product.id} className="group hover:shadow-lg transition-shadow duration-200">
+          <CardHeader className="p-0">
+            <div className="aspect-square overflow-hidden rounded-t-lg">
+              <img
+                src={product.image_url || "/placeholder.svg"}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+              />
+            </div>
+          </CardHeader>
+          
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between mb-2">
+              <CardTitle className="text-lg font-semibold line-clamp-1">
+                {product.name}
+              </CardTitle>
               {product.featured && (
-                <Badge className="absolute top-2 left-2 z-10 bg-orange-500">
-                  <Star className="h-3 w-3 mr-1" />
+                <Badge variant="secondary" className="ml-2 shrink-0">
                   Featured
                 </Badge>
               )}
-              <img
-                src={product.image_url || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400"}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <Button variant="secondary" size="sm">
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Quick Add
-                </Button>
-              </div>
             </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <Badge variant="outline" className="text-xs">
-                  {product.categories?.name || 'Uncategorized'}
-                </Badge>
-                <span className="text-lg font-bold text-primary">
-                  ${product.price}
-                </span>
-              </div>
-              <h3 className="font-semibold mb-2 line-clamp-1 group-hover:text-primary transition-colors">
-                {product.name}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+            
+            {product.categories && (
+              <Badge variant="outline" className="mb-2">
+                {product.categories.name}
+              </Badge>
+            )}
+            
+            {product.description && (
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                 {product.description}
               </p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">
-                  {product.stock_quantity ? `${product.stock_quantity} in stock` : 'Out of stock'}
-                </span>
-                <Button 
-                  size="sm" 
-                  disabled={!product.stock_quantity}
-                  className="text-xs px-3 py-1"
-                >
-                  Add to Cart
-                </Button>
-              </div>
+            )}
+            
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold text-primary">
+                ${Number(product.price).toFixed(2)}
+              </span>
+              
+              {product.stock_quantity !== null && product.stock_quantity <= 5 && (
+                <Badge variant="destructive">
+                  {product.stock_quantity === 0 ? "Out of Stock" : `${product.stock_quantity} left`}
+                </Badge>
+              )}
             </div>
           </CardContent>
+          
+          <CardFooter className="p-4 pt-0">
+            <Button 
+              className="w-full" 
+              onClick={() => handleAddToCart(product.id, product.name)}
+              disabled={loading || (product.stock_quantity !== null && product.stock_quantity === 0)}
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
+            </Button>
+          </CardFooter>
         </Card>
       ))}
     </div>
