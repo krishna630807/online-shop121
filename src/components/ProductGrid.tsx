@@ -1,11 +1,10 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "@/hooks/use-toast";
+import { toast } from '@/hooks/use-toast';
 
 interface Product {
   id: string;
@@ -26,20 +25,20 @@ interface ProductGridProps {
 }
 
 export const ProductGrid = ({ products }: ProductGridProps) => {
-  const { addToCart, loading } = useCart();
-  const { user } = useAuth();
+  const { addToCart } = useCart();
 
-  const handleAddToCart = async (productId: string, productName: string) => {
-    if (!user) {
-      toast({
-        title: "Please sign in",
-        description: "You need to be signed in to add items to cart",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    await addToCart(productId);
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url,
+      quantity: 1,
+    });
+    toast({
+      title: "Added to cart",
+      description: `${product.name} was added to your cart.`,
+    });
   };
 
   if (products.length === 0) {
@@ -64,7 +63,6 @@ export const ProductGrid = ({ products }: ProductGridProps) => {
               />
             </div>
           </CardHeader>
-          
           <CardContent className="p-4">
             <div className="flex items-start justify-between mb-2">
               <CardTitle className="text-lg font-semibold line-clamp-1">
@@ -76,24 +74,18 @@ export const ProductGrid = ({ products }: ProductGridProps) => {
                 </Badge>
               )}
             </div>
-            
             {product.categories && (
               <Badge variant="outline" className="mb-2">
                 {product.categories.name}
               </Badge>
             )}
-            
             {product.description && (
               <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                 {product.description}
               </p>
             )}
-            
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold text-primary">
-                ${Number(product.price).toFixed(2)}
-              </span>
-              
+              <span className="text-2xl font-bold text-primary">${Number(product.price).toFixed(2)}</span>
               {product.stock_quantity !== null && product.stock_quantity <= 5 && (
                 <Badge variant="destructive">
                   {product.stock_quantity === 0 ? "Out of Stock" : `${product.stock_quantity} left`}
@@ -101,12 +93,11 @@ export const ProductGrid = ({ products }: ProductGridProps) => {
               )}
             </div>
           </CardContent>
-          
           <CardFooter className="p-4 pt-0">
-            <Button 
-              className="w-full" 
-              onClick={() => handleAddToCart(product.id, product.name)}
-              disabled={loading || (product.stock_quantity !== null && product.stock_quantity === 0)}
+            <Button
+              className="w-full"
+              onClick={() => handleAddToCart(product)}
+              disabled={product.stock_quantity !== null && product.stock_quantity === 0}
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
               {product.stock_quantity === 0 ? "Out of Stock" : "Add to Cart"}
