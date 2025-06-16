@@ -21,7 +21,7 @@ export const Header = ({ onSearchClick }: HeaderProps) => {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-2">
           <Link to="/">
-            <h1 className="text-2xl font-bold text-primary cursor-pointer">CatalogHaven</h1>
+            <h1 className="text-2xl font-bold text-primary cursor-pointer">ShopVault</h1>
           </Link>
         </div>
 
